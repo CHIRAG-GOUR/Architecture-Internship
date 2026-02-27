@@ -57,6 +57,9 @@ function BlockShape() {
 // Reusable 3x3 Grid component for drawing views
 function DrawingGrid({ title, activeGrid, setGrid, correctGrid }) {
     const toggleCell = (r, c) => {
+        // If it's already correct, it's glued!
+        if (activeGrid[r][c] && correctGrid[r][c]) return;
+
         const newGrid = activeGrid.map(row => [...row]);
         newGrid[r][c] = !newGrid[r][c];
         setGrid(newGrid);
@@ -83,18 +86,22 @@ function DrawingGrid({ title, activeGrid, setGrid, correctGrid }) {
                 border: `2px solid ${isCorrect ? "#2e7d32" : "transparent"}`
             }}>
                 {activeGrid.map((row, r) =>
-                    row.map((cell, c) => (
-                        <div
-                            key={`${r}-${c}`}
-                            onClick={() => toggleCell(r, c)}
-                            style={{
-                                background: cell ? "#85ABAB" : "#fff",
-                                cursor: "pointer",
-                                transition: "background 0.2s",
-                                boxShadow: cell ? "inset 0 0 0 1px #1F3345" : "none"
-                            }}
-                        />
-                    ))
+                    row.map((cell, c) => {
+                        const isGlued = cell && correctGrid[r][c];
+                        const isWrong = cell && !correctGrid[r][c];
+                        return (
+                            <div
+                                key={`${r}-${c}`}
+                                onClick={() => toggleCell(r, c)}
+                                style={{
+                                    background: isGlued ? "#85ABAB" : (isWrong ? "#c97a7e" : "#fff"),
+                                    cursor: isGlued ? "default" : "pointer",
+                                    transition: "background 0.2s",
+                                    boxShadow: cell ? "inset 0 0 0 1px #1F3345" : "none"
+                                }}
+                            />
+                        );
+                    })
                 )}
             </div>
         </div>

@@ -824,23 +824,23 @@ const chaptersData = [
     locked: false,
     moduleTitle: "Module 2: Technical Foundations",
     moduleSubtitle: "The Language of Builders",
-    chapterTitle: "Orthographic Projection",
+    chapterTitle: "Chapter 1: Orthographic Projection",
     chapterSubtitle: "Mastering plans, sections, and elevations.",
     heroImage: "/assets/orthographic_hero.png",
     introText:
-      "Since you've mastered the conceptual language of form, space, and site, we now move into Technical Foundations. Orthographic Projection is the universal language of builders and designers. It is a way of representing a three-dimensional object in two dimensions by 'flattening' it onto a series of planes. Imagine a glass box around an object; orthographic projection is what you see when you look perfectly straight at each face of that box.",
+      "Since you've mastered the conceptual language of form, space, and site, we now move into Technical Foundations. Orthographic Projection is the universal language of builders and designers. It is a way of representing a three-dimensional object in two dimensions by \"flattening\" it onto a series of planes. Imagine a glass box around an object; orthographic projection is what you see when you look perfectly straight at each face of that box.",
     introVideos: [
       {
-        title: "What is orthographic, oblique, axonometric or perspective projection?",
+        title: "What is orthographic, oblique, axonometric or perspective projection? – Teaching of Art",
         url: "https://youtu.be/-J1cSzfl4mk?t=49",
       },
     ],
     chapterVectors: [],
-    chapterImage: "",
+    chapterImage: "https://login.skillizee.io/s/articles/69a1451c5bb20c055a2698b5/images/image-20260227124801-1.png",
     chapterVideos: [
       {
         title: "Understanding Orthographic Drawings",
-        url: "https://youtu.be/heIobpUVZqc",
+        url: "https://youtu.be/heIobpUVZqc?si=Pr3kHPnm00ROw98h",
       }
     ],
     concepts: [

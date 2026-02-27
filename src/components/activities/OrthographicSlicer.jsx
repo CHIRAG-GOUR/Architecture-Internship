@@ -149,13 +149,33 @@ function SlicerScene({ cutMode, cutDepth }) {
 
 export default function OrthographicSlicer() {
     const [cutMode, setCutMode] = useState("plan");
-    // Plan ranges from Y=4 down to Y=-1
-    // Section ranges from X=3 down to X=-3
     const [cutDepth, setCutDepth] = useState(2);
+
+    // Quiz states to unlock the sliders
+    const [planUnlocked, setPlanUnlocked] = useState(false);
+    const [sectionUnlocked, setSectionUnlocked] = useState(false);
+    const [quizError, setQuizError] = useState("");
 
     const handleModeChange = (mode) => {
         setCutMode(mode);
-        setCutDepth(mode === "plan" ? 2 : 1.5);
+        setQuizError("");
+        if (mode === "plan" && planUnlocked) setCutDepth(2);
+        if (mode === "section" && sectionUnlocked) setCutDepth(1.5);
+    };
+
+    const handleQuizAnswer = (mode, isCorrect) => {
+        if (isCorrect) {
+            setQuizError("");
+            if (mode === "plan") {
+                setPlanUnlocked(true);
+                setCutDepth(2);
+            } else {
+                setSectionUnlocked(true);
+                setCutDepth(1.5);
+            }
+        } else {
+            setQuizError("Not quite. Think about what standard architectural conventions require.");
+        }
     };
 
     const getMinMax = () => {
@@ -201,19 +221,52 @@ export default function OrthographicSlicer() {
                     </button>
                 </div>
 
-                <div style={{ padding: "0 1rem 1.5rem 1rem", maxWidth: "400px", margin: "0 auto" }}>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#8b7355", marginBottom: "0.5rem" }}>
-                        Cut Depth
-                    </label>
-                    <input
-                        type="range"
-                        min={getMinMax().min}
-                        max={getMinMax().max}
-                        step="0.05"
-                        value={cutDepth}
-                        onChange={(e) => setCutDepth(parseFloat(e.target.value))}
-                        style={{ width: "100%", accentColor: "#c9a96e" }}
-                    />
+                {/* Quiz or Slider */}
+                <div style={{ padding: "0 1rem 1.5rem 1rem", maxWidth: "500px", margin: "0 auto", minHeight: "100px" }}>
+                    {cutMode === "plan" && !planUnlocked && (
+                        <div style={{ background: "#faf7f2", border: "1px solid #d9cbb9", padding: "1rem", borderRadius: "8px" }}>
+                            <p style={{ fontWeight: "bold", fontSize: "0.95rem", marginBottom: "0.5rem", color: "#4a3728" }}>
+                                Architect's Question: At what height should a standard floor plan be cut?
+                            </p>
+                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                                <button onClick={() => handleQuizAnswer("plan", false)} style={{ flex: 1, padding: "6px", background: "#fff", border: "1px solid #c9a96e", borderRadius: "4px", cursor: "pointer" }}>Ground Level</button>
+                                <button onClick={() => handleQuizAnswer("plan", true)} style={{ flex: 1, padding: "6px", background: "#fff", border: "1px solid #c9a96e", borderRadius: "4px", cursor: "pointer" }}>~4 Feet (1.2m)</button>
+                                <button onClick={() => handleQuizAnswer("plan", false)} style={{ flex: 1, padding: "6px", background: "#fff", border: "1px solid #c9a96e", borderRadius: "4px", cursor: "pointer" }}>Ceiling Height</button>
+                            </div>
+                            {quizError && <p style={{ color: "#d32f2f", fontSize: "0.85rem", marginTop: "0.5rem" }}>{quizError}</p>}
+                        </div>
+                    )}
+
+                    {cutMode === "section" && !sectionUnlocked && (
+                        <div style={{ background: "#faf7f2", border: "1px solid #d9cbb9", padding: "1rem", borderRadius: "8px" }}>
+                            <p style={{ fontWeight: "bold", fontSize: "0.95rem", marginBottom: "0.5rem", color: "#4a3728" }}>
+                                Architect's Question: What is the primary purpose of a Section cut?
+                            </p>
+                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                                <button onClick={() => handleQuizAnswer("section", false)} style={{ flex: 1, padding: "6px", background: "#fff", border: "1px solid #c9a96e", borderRadius: "4px", cursor: "pointer" }}>To show exterior materials</button>
+                                <button onClick={() => handleQuizAnswer("section", true)} style={{ flex: 1, padding: "6px", background: "#fff", border: "1px solid #c9a96e", borderRadius: "4px", cursor: "pointer" }}>To show vertical relationships</button>
+                                <button onClick={() => handleQuizAnswer("section", false)} style={{ flex: 1, padding: "6px", background: "#fff", border: "1px solid #c9a96e", borderRadius: "4px", cursor: "pointer" }}>To show door swings</button>
+                            </div>
+                            {quizError && <p style={{ color: "#d32f2f", fontSize: "0.85rem", marginTop: "0.5rem" }}>{quizError}</p>}
+                        </div>
+                    )}
+
+                    {((cutMode === "plan" && planUnlocked) || (cutMode === "section" && sectionUnlocked)) && (
+                        <>
+                            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#8b7355", marginBottom: "0.5rem", textAlign: "center" }}>
+                                Exact Cut Depth Adjuster
+                            </label>
+                            <input
+                                type="range"
+                                min={getMinMax().min}
+                                max={getMinMax().max}
+                                step="0.05"
+                                value={cutDepth}
+                                onChange={(e) => setCutDepth(parseFloat(e.target.value))}
+                                style={{ width: "100%", accentColor: "#c9a96e" }}
+                            />
+                        </>
+                    )}
                 </div>
 
                 {/* 3D Viewport */}

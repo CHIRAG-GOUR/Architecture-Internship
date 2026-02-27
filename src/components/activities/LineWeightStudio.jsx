@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import ScrollReveal from "../ScrollReveal";
 
 // Define the elements of our floor plan
@@ -7,7 +7,7 @@ const PLAN_ELEMENTS = [
     { id: "wall1", type: "wall", d: "M 20 20 L 380 20 L 380 40 L 40 40 L 40 260 L 20 260 Z" },
     { id: "wall2", type: "wall", d: "M 380 120 L 380 260 L 200 260 L 200 240 L 360 240 L 360 120 Z" },
     { id: "wall3", type: "wall", d: "M 20 260 L 120 260 L 120 240 L 40 240 Z" },
-    { id: "interior_wall", type: "wall", d: "M 200 20 L 200 120 L 180 120 L 180 40 L 40 40 L 40 20 Z" }, // Simplified
+    { id: "interior_wall", type: "wall", d: "M 200 20 L 200 120 L 180 120 L 180 40 L 40 40 L 40 20 Z" },
 
     // Windows
     { id: "window1", type: "window", d: "M 40 20 L 180 20", isLine: true },
@@ -38,7 +38,6 @@ const WEIGHTS = {
     unassigned: { name: "Unassigned", width: 2, color: "#d9cbb9" } // Default dashed look
 };
 
-// The rules defining correct answers
 const CORRECT_MAPPING = {
     wall: "heavy",
     window: "medium",
@@ -47,30 +46,94 @@ const CORRECT_MAPPING = {
 };
 
 export default function LineWeightStudio() {
+    const [mode, setMode] = useState("guided"); // "guided" or "sandbox"
+
+    // Guided Mode State
     const [activePen, setActivePen] = useState("heavy");
-    // Holds mapping of element id -> weight key ("heavy", "medium", "light")
     const [assignedWeights, setAssignedWeights] = useState({});
 
+    // Sandbox Mode State
+    const [drawnPaths, setDrawnPaths] = useState([]);
+    const [currentPath, setCurrentPath] = useState(null);
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [sandboxScore, setSandboxScore] = useState(null);
+    const svgRef = useRef();
+
     const handleElementClick = (id) => {
+        if (mode !== "guided") return;
         setAssignedWeights(prev => ({
             ...prev,
             [id]: activePen
         }));
     };
 
-    // Check if all elements are assigned and correct
+    // Calculate Guided Score
     const totalElements = PLAN_ELEMENTS.length;
     const assignedCount = Object.keys(assignedWeights).length;
-
     let correctCount = 0;
     PLAN_ELEMENTS.forEach(el => {
         if (assignedWeights[el.id] === CORRECT_MAPPING[el.type]) {
             correctCount++;
         }
     });
-
     const isComplete = assignedCount === totalElements;
     const isAllCorrect = correctCount === totalElements;
+
+    // Sandbox Drawing Handlers
+    const getCoordinates = (e) => {
+        const svg = svgRef.current;
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        const cursorPoint = pt.matrixTransform(svg.getScreenCTM().inverse());
+        // Snap to grid (20px) roughly to make drawings look architectural
+        return {
+            x: Math.round(cursorPoint.x / 10) * 10,
+            y: Math.round(cursorPoint.y / 10) * 10
+        };
+    };
+
+    const handleMouseDown = (e) => {
+        if (mode !== "sandbox") return;
+        setIsDrawing(true);
+        const { x, y } = getCoordinates(e.nativeEvent || e);
+        setCurrentPath(`M ${x} ${y}`);
+    };
+
+    const handleMouseMove = (e) => {
+        if (mode !== "sandbox" || !isDrawing) return;
+        const { x, y } = getCoordinates(e.nativeEvent || e);
+        setCurrentPath(prev => `${prev} L ${x} ${y}`);
+    };
+
+    const handleMouseUp = () => {
+        if (mode !== "sandbox" || !isDrawing) return;
+        setIsDrawing(false);
+        if (currentPath && currentPath.includes("L")) {
+            setDrawnPaths(prev => [...prev, { d: currentPath, weight: activePen }]);
+        }
+        setCurrentPath(null);
+    };
+
+    const handleJudgeSandbox = () => {
+        if (drawnPaths.length === 0) {
+            setSandboxScore("You haven't drawn anything! Add some walls.");
+            return;
+        }
+        const hasHeavy = drawnPaths.some(p => p.weight === "heavy");
+        const hasMedium = drawnPaths.some(p => p.weight === "medium");
+        const hasLight = drawnPaths.some(p => p.weight === "light");
+
+        if (hasHeavy && hasMedium && hasLight) {
+            setSandboxScore("✨ Masterful! You used heavy lines for walls, medium for objects, and light for details. 10/10 spatial hierarchy.");
+        } else if (hasHeavy && hasLight) {
+            setSandboxScore("Good depth! But try adding medium lines for outlines and minor structures. 8/10.");
+        } else if (hasHeavy) {
+            setSandboxScore("Strong walls, but where are the details? A good plan needs light lines too. 5/10.");
+        } else {
+            setSandboxScore("A blueprint needs heavy cut lines to show solid mass! 3/10.");
+        }
+    };
 
     return (
         <div className="section-gap">
@@ -80,9 +143,15 @@ export default function LineWeightStudio() {
             </ScrollReveal>
 
             <ScrollReveal className="content-card" delay={150}>
-                <p style={{ marginBottom: "1rem", color: "#4a3728", fontSize: "1.05rem" }}>
-                    Select a pen from the toolbar and click the lines on the blueprint below to apply standard architectural line weights.
-                </p>
+                {mode === "guided" ? (
+                    <p style={{ marginBottom: "1rem", color: "#4a3728", fontSize: "1.05rem" }}>
+                        Select a pen from the toolbar and click the lines on the blueprint below to apply standard architectural line weights.
+                    </p>
+                ) : (
+                    <p style={{ marginBottom: "1rem", color: "#4a3728", fontSize: "1.05rem" }}>
+                        <strong>Sandbox Mode:</strong> Use your pens to draw your own structure from scratch. Click and drag on the grid!
+                    </p>
+                )}
 
                 {/* Toolbar */}
                 <div style={{ display: "flex", gap: "10px", marginBottom: "1.5rem", flexWrap: "wrap", justifyContent: "center" }}>
@@ -95,25 +164,60 @@ export default function LineWeightStudio() {
                                 background: activePen === weight ? "#e8dfd5" : "transparent",
                                 border: `2px solid ${activePen === weight ? WEIGHTS[weight].color : "#d9cbb9"} `,
                                 color: WEIGHTS[weight].color,
-                                padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: 600, transition: "all 0.2s"
+                                padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: 600, transition: "all 0.2s",
+                                userSelect: "none"
                             }}
                         >
-                            {/* Pen thickness visual indicator */}
-                            <div style={{ width: "20px", height: `${WEIGHTS[weight].width} px`, background: WEIGHTS[weight].color, borderRadius: "2px" }} />
+                            <div style={{ width: "20px", height: `${WEIGHTS[weight].width}px`, background: WEIGHTS[weight].color, borderRadius: "2px" }} />
                             {WEIGHTS[weight].name}
                         </button>
                     ))}
+                    {mode === "sandbox" && (
+                        <button onClick={() => setDrawnPaths([])} style={{ background: "transparent", border: "1px solid #d32f2f", color: "#d32f2f", padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: 600 }}>
+                            Clear Paper
+                        </button>
+                    )}
                 </div>
 
-                {/* Status indicator */}
-                <div style={{ textAlign: "center", marginBottom: "1rem", minHeight: "24px", fontWeight: "bold", color: isAllCorrect ? "#2e7d32" : "#8b7355" }}>
-                    {isComplete
-                        ? (isAllCorrect ? "✨ Perfect Draft! The hierarchy is clear." : "Almost there. Check your wall slices vs details.")
-                        : `Drafted: ${assignedCount} / ${totalElements} elements`}
-                </div >
+                {/* Status indicator / Judging */}
+                <div style={{ textAlign: "center", marginBottom: "1rem", minHeight: "24px", fontWeight: "bold", color: "#4a3728" }}>
+                    {mode === "guided" ? (
+                        <span style={{ color: isAllCorrect ? "#2e7d32" : "#8b7355" }}>
+                            {isComplete
+                                ? (isAllCorrect ? "✨ Perfect Draft! The hierarchy is clear." : "Almost there. Check your wall slices vs details.")
+                                : `Drafted: ${assignedCount} / ${totalElements} elements`}
+                        </span>
+                    ) : (
+                        <span style={{ color: sandboxScore?.includes("✨") ? "#2e7d32" : "#5c4033" }}>
+                            {sandboxScore || "Draw walls, doors, and details..."}
+                        </span>
+                    )}
+                </div>
+
+                {/* Special Action Buttons */}
+                {mode === "guided" && isAllCorrect && (
+                    <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+                        <button
+                            onClick={() => setMode("sandbox")}
+                            style={{ background: "#2e7d32", color: "white", padding: "10px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", fontSize: "1.05rem" }}
+                        >
+                            🎨 Proceed to Sandbox Drawing Mode
+                        </button>
+                    </div>
+                )}
+                {mode === "sandbox" && (
+                    <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+                        <button
+                            onClick={handleJudgeSandbox}
+                            style={{ background: "#c9a96e", color: "white", padding: "10px 20px", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold", fontSize: "1.05rem", marginRight: "10px" }}
+                        >
+                            🎓 Submit for Judging
+                        </button>
+                    </div>
+                )}
 
                 {/* SVG Drawing Canvas */}
-                < div style={{
+                <div style={{
                     background: "#faf7f2",
                     borderRadius: "12px",
                     border: "2px solid #e8dfd5",
@@ -121,20 +225,26 @@ export default function LineWeightStudio() {
                     width: "100%",
                     maxWidth: "600px",
                     margin: "0 auto",
-                    boxShadow: "inset 0 2px 10px rgba(0,0,0,0.02)"
+                    boxShadow: "inset 0 2px 10px rgba(0,0,0,0.02)",
+                    touchAction: "none" // Prevents scrolling while drawing on touch devices
                 }}>
-                    <svg viewBox="0 0 400 300" style={{ width: "100%", height: "auto", display: "block" }}>
+                    <svg
+                        ref={svgRef}
+                        viewBox="0 0 400 300"
+                        style={{ width: "100%", height: "auto", display: "block", cursor: mode === "sandbox" ? "crosshair" : "default" }}
+                        onPointerDown={handleMouseDown}
+                        onPointerMove={handleMouseMove}
+                        onPointerUp={handleMouseUp}
+                        onPointerLeave={handleMouseUp}
+                    >
                         {/* Grid background */}
                         <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
                             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#d9cbb9" strokeWidth="0.5" opacity="0.5" />
                         </pattern>
                         <rect width="400" height="300" fill="url(#grid)" />
 
-                        {/* Elements */}
-                        {PLAN_ELEMENTS.map(el => {
+                        {mode === "guided" && PLAN_ELEMENTS.map(el => {
                             const weightInfo = assignedWeights[el.id] ? WEIGHTS[assignedWeights[el.id]] : WEIGHTS.unassigned;
-                            const isHoverable = true;
-
                             return (
                                 <path
                                     key={el.id}
@@ -155,16 +265,41 @@ export default function LineWeightStudio() {
                                 />
                             );
                         })}
+
+                        {mode === "sandbox" && drawnPaths.map((path, i) => (
+                            <path
+                                key={i}
+                                d={path.d}
+                                fill="none"
+                                stroke={WEIGHTS[path.weight].color}
+                                strokeWidth={WEIGHTS[path.weight].width}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        ))}
+
+                        {/* The actively drawn line */}
+                        {mode === "sandbox" && isDrawing && currentPath && (
+                            <path
+                                d={currentPath}
+                                fill="none"
+                                stroke={WEIGHTS[activePen].color}
+                                strokeWidth={WEIGHTS[activePen].width}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                opacity="0.7"
+                            />
+                        )}
                     </svg>
-                </div >
+                </div>
 
                 {/* Hints */}
-                < div style={{ marginTop: "1.5rem", fontSize: "0.85rem", color: "#5c4033", display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+                <div style={{ marginTop: "1.5rem", fontSize: "0.85rem", color: "#5c4033", display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", textAlign: "center" }}>
                     <span><strong>Hint:</strong> Walls are cut (Heavy).</span>
                     <span>Doors/Windows are outlines (Medium).</span>
                     <span>Furniture/Tiles are details (Light).</span>
-                </div >
-            </ScrollReveal >
-        </div >
+                </div>
+            </ScrollReveal>
+        </div>
     );
 }
