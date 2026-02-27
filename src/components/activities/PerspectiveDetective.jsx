@@ -5,10 +5,10 @@ import ScrollReveal from "../ScrollReveal";
 const CASES = [
     {
         id: "case1",
-        title: "The Long Hallway",
+        title: "The Urban Grid",
         type: "1-Point",
-        image: "https://images.unsplash.com/photo-1541123437800-1bb1317bc951?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-        description: "A classic example of 1-Point Perspective. Notice how the floor lines, ceiling, and walls all converge to a single point directly in front of you.",
+        image: "/assets/one_point_perspective_city.png",
+        description: "A classic example of 1-Point Perspective. Notice how the street lines, crosswalk, and building edges all converge to a single point directly in the center of the horizon.",
         vpCount: 1
     },
     {

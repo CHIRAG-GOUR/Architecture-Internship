@@ -49,7 +49,9 @@ function UnderConstructionHouse() {
 
     useFrame((state) => {
         // Very slow, majestic rotation to show off the isometric 3D depth
-        groupRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+        if (groupRef.current) {
+            groupRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+        }
     });
 
     return (

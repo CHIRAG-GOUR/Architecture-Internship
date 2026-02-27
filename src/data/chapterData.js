@@ -1043,6 +1043,104 @@ const chaptersData = [
         ],
       },
     },
+  },
+  {
+    id: "3.1",
+    locked: false,
+    moduleTitle: "Module 3: Digital Translation",
+    moduleSubtitle: "From Board to Screen",
+    chapterTitle: "Chapter 1: Digital Modeling (BIM/CAD)",
+    chapterSubtitle: "Intro to industry-standard tools like Revit, Rhino, or AutoCAD.",
+    heroImage: "/assets/digital_modeling_hero.png",
+    introText:
+      "We transition from the drafting board to the digital workspace. In the modern industry, we no longer just 'draw' buildings; we build them virtually. This shift is defined by two distinct philosophies: CAD (Computer-Aided Design) and BIM (Building Information Modeling).",
+    introVideos: [
+      {
+        title: "Understand BIM in 1 minute",
+        url: "https://youtu.be/omaw1mdk9xg",
+      }
+    ],
+    chapterVectors: [],
+    // chapterImage: "", // Omitted since none provided
+    chapterVideos: [
+      {
+        title: "AutoCAD Basic Tutorial for Beginners - Part 1",
+        url: "https://youtu.be/cmR9cfWJRUU",
+      },
+      {
+        title: "What is Rhino 3D?",
+        url: "https://youtu.be/XwyJMKLEoCg",
+      },
+      {
+        title: "What Is Revit? BIM Software from Autodesk",
+        url: "https://youtu.be/_qqT9j0rzuk",
+      }
+    ],
+    concepts: [
+      {
+        title: "1. AutoCAD: The Digital Pencil",
+        description:
+          "AutoCAD is the industry standard for 2D drafting. Think of it as an infinite sheet of paper where you use coordinates (x, y) to draw precise lines, circles, and arcs.",
+        bullets: [
+          "Logic: It is geometry-based. If you draw two lines, the computer doesn't know they are a 'wall'; it just knows they are two parallel lines.",
+          "Best For: Detailed construction drawings, electrical layouts, and 2D floor plans where speed and precision are key.",
+        ],
+      },
+      {
+        title: "2. Rhino: The Sculptor’s Tool",
+        description:
+          "Rhino (Rhinoceros 3D) is the go-to software for complex, organic, and 'curvy' geometry. It uses NURBS, which allows for mathematically perfect curves.",
+        bullets: [
+          "Logic: It is surface-based. It’s perfect for the 'Massing' and 'Form' exercises we did in Chapter 1.",
+          "Grasshopper: A plugin for Rhino used for Parametric Design, where you can use 'code' (visual nodes) to create complex patterns impossible to draw by hand.",
+        ],
+      },
+      {
+        title: "3. Revit: The Virtual Construction Site (BIM)",
+        description:
+          "Revit is the king of BIM. Unlike CAD, when you 'draw' a line in Revit, you are actually placing a 3D wall that contains data (material, cost, thermal resistance).",
+        bullets: [
+          "The 'I' in BIM: Every object has Information. If you change a window in a 3D view, it automatically updates in the Floor Plan, Section, and Elevation.",
+          "Collaboration: Architects, structural engineers, and plumbers all work on the same 3D model simultaneously.",
+        ],
+      },
+    ],
+    comparisonTable: {
+      title: "Digital Tools Comparison",
+      headers: ["Tool", "Category", "Strength", "Use Case"],
+      rows: [
+        ["AutoCAD", "2D CAD", "Precision & Speed", "Construction Details"],
+        ["Rhino", "3D Modeling", "Complex Curves/Form", "Conceptual Design"],
+        ["Revit", "BIM", "Data & Coordination", "Full Building Project"],
+        ["SketchUp", "3D Modeling", "Ease of Use", "Quick Brainstorming"],
+      ],
+    },
+    goldenRule:
+      "Key Concept: The 'Single Source of Truth'. The biggest advantage of digital modeling, especially BIM, is that it eliminates errors. In a digital model, the Plan and Section are just different 'cameras' looking at the same 3D object.",
+    endingQuote: {
+      quote: "Computers are incredibly fast, accurate, and stupid. Human beings are incredibly slow, inaccurate, and brilliant. Together they are powerful beyond imagination.",
+      author: "Albert Einstein (attributed)",
+      // No image provided
+    },
+    activities: {
+      quiz: {
+        title: "Knowledge Check",
+        questions: [
+          {
+            question: "Which of these tools is strictly 'geometry-based' meaning it draws lines but doesn't know what a 'wall' is?",
+            options: ["Revit", "AutoCAD", "Grasshopper", "SketchUp"],
+            correctIndex: 1,
+            explanation: "AutoCAD is geometry-based. It just draws vectors (lines, arcs) based on coordinates.",
+          },
+          {
+            question: "What does the 'I' in BIM stand for?",
+            options: ["Illustration", "Information", "Integration", "Iteration"],
+            correctIndex: 1,
+            explanation: "BIM stands for Building Information Modeling. The data (Information) attached to 3D objects is what makes it powerful.",
+          },
+        ],
+      },
+    },
   }
 ];
 

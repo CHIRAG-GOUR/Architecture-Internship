@@ -12,6 +12,15 @@ export default function TheVanishingPoint() {
         { x: 350, y: 150, width: 100, height: 150, color: "#5c4033" }, // Right building
     ];
 
+    const getLessonText = () => {
+        if (vpY < 100) return "🦅 Bird's Eye View: The horizon is high. We look down at the buildings from above.";
+        if (vpY > 250) return "🐛 Worm's Eye View: The horizon is low. We look up at the buildings from the ground.";
+        if (Math.abs(vpX - 250) < 30) return "⚖️ Symmetrical 1-Point: The vanishing point is centered. The scene feels balanced and formal.";
+        if (vpX < 150) return "⬅️ Asymmetrical (Left): The point is shifted left. It guides your eye to the left side.";
+        if (vpX > 350) return "➡️ Asymmetrical (Right): The point is shifted right. It guides your eye to the right side.";
+        return "👀 Normal Eye Level: The horizon is at a natural height.";
+    };
+
     const handlePointerDown = (e) => {
         setIsDraggingVP(true);
         e.target.setPointerCapture(e.pointerId);
@@ -37,9 +46,16 @@ export default function TheVanishingPoint() {
             <ScrollReveal className="content-card">
                 <div style={{ textAlign: "center" }}>
                     <h3 style={{ color: "#5c4033", marginBottom: "1rem" }}>The Vanishing Point</h3>
-                    <p style={{ color: "#8b7355", fontSize: "0.95rem", marginBottom: "1.5rem" }}>
+                    <p style={{ color: "#8b7355", fontSize: "0.95rem", marginBottom: "1rem" }}>
                         Drag the red Vanishing Point and the Horizon Line to see how One-Point Perspective dynamically updates the depth of the buildings.
                     </p>
+                    <div style={{
+                        background: "#f0efe9", padding: "1rem", borderRadius: "8px",
+                        borderLeft: "4px solid #c97a7e", marginBottom: "1.5rem",
+                        color: "#4a3728", fontWeight: 600, fontSize: "0.95rem"
+                    }}>
+                        Current View: {getLessonText()}
+                    </div>
 
                     <div
                         style={{
