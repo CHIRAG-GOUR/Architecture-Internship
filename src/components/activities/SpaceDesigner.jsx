@@ -86,9 +86,9 @@ export default function SpaceDesigner() {
 
     return (
         <div className="section-gap">
-            <ScrollReveal className="heading-card">
-                <h2>🏠 Sculpt a Space</h2>
-                <p className="subtitle">Tap any wall to cycle: solid → window → doorway → open</p>
+            <ScrollReveal className="heading-card" style={{ background: "#3a2e1f", borderLeft: "6px solid #c9a96e" }}>
+                <h2 style={{ color: "#fcf8f2" }}>🏠 Sculpt a Space</h2>
+                <p className="subtitle" style={{ color: "rgba(252, 248, 242, 0.7)" }}>Tap any wall to cycle: solid → window → doorway → open</p>
             </ScrollReveal>
 
             <ScrollReveal className="content-card" delay={150}>
