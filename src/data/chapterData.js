@@ -923,6 +923,126 @@ const chaptersData = [
         ],
       },
     },
+  },
+  {
+    id: "2.2",
+    locked: false,
+    moduleTitle: "Module 2: Technical Foundations",
+    moduleSubtitle: "The Language of Builders",
+    chapterTitle: "Chapter 2: Perspective & Axonometric",
+    chapterSubtitle: "Creating 3D depth on 2D surfaces.",
+    heroImage: "/assets/isometric_house_blueprint.png",
+    introText:
+      "We move from the 'flat' world of orthographic projections into the world of Depth. While plans and sections are for builders, perspective and axonometric drawings are for the human eye—they allow us to see the relationship between mass, volume, and space in 3D.",
+    introVideos: [
+      {
+        title: "Isometric View | How to Construct an Isometric View of an Object",
+        url: "https://youtu.be/zKFAbmnUvGU?si=wiHoUj6HW8tSMoUs",
+      }
+    ],
+    chapterVectors: [],
+    chapterImage: "https://login.skillizee.io/s/articles/69a15ea9f0f8ad4ade82d457/images/image-20260227143704-1.png",
+    chapterVideos: [
+      {
+        title: "How To Draw A City Using Two Point Perspective",
+        url: "https://youtu.be/yNq78n02fMQ",
+      }
+    ],
+    concepts: [
+      {
+        number: "01",
+        title: "1. Axonometric & Isometric: The 'Parallel' 3D",
+        description:
+          "In these drawings, all vertical and horizontal lines remain parallel. There is no 'vanishing point.' This is the favorite tool of architects because it allows you to measure the drawing accurately.",
+        bullets: [
+          {
+            term: "Isometric",
+            text: "All three axes (height, width, depth) are drawn at 120 degrees to each other. It is the most common '3D' technical view.",
+          },
+          {
+            term: "Plan Oblique",
+            text: "You take a standard floor plan and simply 'extrude' the walls upward at an angle. It preserves the true shape of the floor plan.",
+          },
+          {
+            term: "The Benefit",
+            text: "It shows the interior and exterior simultaneously, like a 'dollhouse' view.",
+          },
+        ],
+        accent: "warm-clay",
+      },
+      {
+        number: "02",
+        title: "2. Perspective: The 'Realistic' View",
+        description:
+          "Perspective mimics how the human eye actually sees. As objects get further away, they appear smaller and eventually disappear into a Vanishing Point.",
+        bullets: [
+          {
+            term: "One-Point Perspective",
+            text: "Used when looking directly at a flat surface (like down a long hallway). All lines lead to a single vanishing point. Vibe: Symmetrical, focused, powerful.",
+          },
+          {
+            term: "Two-Point Perspective",
+            text: "Used when looking at the corner of a building. Two vanishing points on the horizon line (left and right). Vibe: Most realistic for exterior 'hero' shots.",
+          },
+          {
+            term: "Three-Point Perspective",
+            text: "Used for very tall buildings. Two vanishing points on the horizon, one high in sky or deep in ground. Vibe: Dramatic, emphasizes height/depth.",
+          },
+        ],
+        accent: "sage-green",
+      },
+    ],
+    comparisonTable: {
+      title: "Axonometric vs Perspective",
+      headers: ["Feature", "Axonometric", "Perspective"],
+      rows: [
+        ["Parallel Lines", "Stay parallel forever", "Converge at a point"],
+        ["Measurability", "Can be measured with a scale", "Cannot be measured (distorted)"],
+        ["Realism", "Technical / Diagrammatic", "Realistic / Cinematic"],
+      ],
+    },
+    goldenRule:
+      "Key Terminology: Horizon Line (eye level), Vanishing Point (where parallel lines meet), Station Point (where you are standing).",
+    endingQuote: {
+      quote: "To sketch is to plant a seed in the ground. To draft is to build the machine that grows it.",
+      author: "Rem Koolhaas",
+      image: "/assets/rem_koolhaas.png",
+    },
+    activities: {
+      quiz: {
+        title: "Knowledge Check",
+        questions: [
+          {
+            question: "Why do architects often prefer Axonometric/Isometric drawings over Perspectives for technical work?",
+            options: [
+              "They are faster to sketch",
+              "They can be accurately measured with a scale because lines remain parallel",
+              "They look more realistic to clients",
+              "They use fewer colors"
+            ],
+            correctIndex: 1,
+            explanation: "In axonometric drawings, parallel lines do not converge. This means the drawing is measurable and not distorted by perspective.",
+          },
+          {
+            question: "Which type of drawing uses exactly 120 degrees between all three axes?",
+            options: ["Plan Oblique", "One-Point Perspective", "Isometric", "Elevation"],
+            correctIndex: 2,
+            explanation: "Isometric projection is a specific type of axonometric drawing where the angles between the x, y, and z axes are all exactly 120 degrees.",
+          },
+          {
+            question: "What is the 'Horizon Line' in a perspective drawing?",
+            options: [
+              "The physical ground the building sits on",
+              "The exact center of the page",
+              "The eye level of the viewer (Station Point)",
+              "The tallest point of the building"
+            ],
+            correctIndex: 2,
+            explanation: "The Horizon Line represents the viewer's exact eye level. Vanishing points typically sit on this line.",
+          }
+        ],
+      },
+    },
   }
 ];
 

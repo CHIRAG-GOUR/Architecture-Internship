@@ -39,6 +39,11 @@ import OrthographicSlicer from "./components/activities/OrthographicSlicer";
 import LineWeightStudio from "./components/activities/LineWeightStudio";
 import ProjectionPuzzle from "./components/activities/ProjectionPuzzle";
 
+/* Chapter 2.2 activities */
+import TheVanishingPoint from "./components/activities/TheVanishingPoint";
+import IsometricExtruder from "./components/activities/IsometricExtruder";
+import PerspectiveDetective from "./components/activities/PerspectiveDetective";
+
 import chaptersData from "./data/chapterData";
 
 /* ── Chapter-specific activity mappings ── */
@@ -49,6 +54,7 @@ const CHAPTER_ACTIVITIES = {
   "1.4": [SunPathSimulator, TerrainBuilder],
   "1.5": [BuildingAutopsy, AIPrecedentAnalyzer],
   "2.1": [OrthographicSlicer, LineWeightStudio, ProjectionPuzzle],
+  "2.2": [TheVanishingPoint, IsometricExtruder, PerspectiveDetective],
 };
 
 /* ── Mouse tilt on content cards ── */
@@ -372,11 +378,20 @@ function HomePage() {
 
 /* ── Background Manager ── */
 import { useLocation } from "react-router-dom";
+import IsometricBackground from "./components/IsometricBackground";
+
 function BackgroundManager() {
   const location = useLocation();
-  // If we are in chapter 2.x, show BlueprintBackground. Otherwise show ThreeBackground (Module 1).
-  const isModule2 = location.pathname.includes("/chapter/2.");
-  return isModule2 ? <BlueprintBackground /> : <ThreeBackground />;
+  // Chapter 2.2 gets the Isometric Background
+  if (location.pathname.includes("/chapter/2.2")) {
+    return <IsometricBackground />;
+  }
+  // Chapter 2.1 gets the Blueprint Background
+  if (location.pathname.includes("/chapter/2.1")) {
+    return <BlueprintBackground />;
+  }
+  // Everything else (Module 1) gets the Abstract 3D Background
+  return <ThreeBackground />;
 }
 
 /* ── Main App with routing ── */
